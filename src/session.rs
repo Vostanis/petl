@@ -1,74 +1,23 @@
-// use anyhow::Result;
-
-// PostgreSQL ----------------------
-use super::postgres::Postgres;
-#[cfg(not(feature = "postgres"))]
-struct NoPg;
-#[cfg(not(feature = "postgres"))]
-impl Postgres for NoPg {}
-
-// HTTP ----------------------------
-use super::http::Http;
-#[cfg(not(feature = "http"))]
-struct NoHttp;
-#[cfg(not(feature = "http"))]
-impl Http for NoHttp {}
-
 /// Pull together several connection frameworks (like `postgres` and `http`).
-pub struct Session<P: Postgres, H: Http> {
-    // PhantomData used to pass compiler checks on generics (i.e. P: Postgres)
-    // see struct definition above
-    #[cfg(feature = "postgres")]
-    pub pg: P,
-    #[cfg(not(feature = "postgres"))] // PhantomData when feature not included
-    _no_pg: std::marker::PhantomData<P>,
-
-    #[cfg(feature = "http")]
-    pub http: H,
-    #[cfg(not(feature = "http"))]
-    _no_http: std::marker::PhantomData<H>,
-    // #[cfg(feature = "sqlite")]
-    // pub cache: Cache,
-    // #[cfg(not(feature = "sqlite"))]
-    // _no_cache: std::marker::PhantomData<Cache>,
+pub struct Session {
+    pub pg: deadpool_postgres::Pool,
+    pub http: reqwest::Client,
+    // pub cache
 }
 
-impl<P: Postgres, H: Http> Session<P, H> {
+impl Session {
     /// Create a new `Session`, indicating which API endpoints you want to call upon.
     ///
     /// e.g. a process containing the `postgres` & `http` features.
-    pub fn new(#[cfg(feature = "postgres")] pg: P, #[cfg(feature = "http")] http: H) -> Self {
-        Self {
-            #[cfg(feature = "postgres")]
-            pg: pg,
-            #[cfg(not(feature = "postgres"))]
-            _no_pg: NoPg {},
-            #[cfg(feature = "http")]
-            http,
-            #[cfg(not(feature = "http"))]
-            _no_http: NoHttp {},
-        }
-    }
-
-    /// Alter the postgres connection.
-    #[cfg(feature = "postgres")]
-    pub fn mut_pg(&mut self, pg: P) {
-        self.pg = pg;
-    }
-
-    /// Alter the http connection.
-    #[cfg(feature = "http")]
-    pub fn mut_http(&mut self, http: H) {
-        self.http = http;
+    pub fn new(pg: deadpool_postgres::Pool, http: reqwest::Client) -> Self {
+        Self { pg: pg, http }
     }
 }
 
 /// Default settings for a localhost postgres database and default http client.
-#[cfg(all(feature = "postgres", feature = "http"))]
-impl Default for Session<deadpool_postgres::Pool, reqwest::Client> {
-    fn default() -> Session<deadpool_postgres::Pool, reqwest::Client> {
+impl Default for Session {
+    fn default() -> Session {
         Session {
-            #[cfg(feature = "postgres")]
             pg: {
                 let mut conf = deadpool_postgres::Config::new();
                 conf.user = Some("postgres".to_string());
@@ -80,15 +29,12 @@ impl Default for Session<deadpool_postgres::Pool, reqwest::Client> {
                     Some(deadpool_postgres::Runtime::Tokio1),
                     tokio_postgres::NoTls,
                 )
-                .expect("failed to create default postgres pool")
+                .expect("Failed to create default pg pool")
             },
-            #[cfg(not(feature = "postgres"))]
-            _no_pg: NoPg {},
-
-            #[cfg(feature = "http")]
-            http: reqwest::Client::new(),
-            #[cfg(not(feature = "http"))]
-            _no_pg: NoHttp {},
+            http: reqwest::ClientBuilder::new()
+                .user_agent("example@example.com")
+                .build()
+                .expect("Failed to build default HTTP client"),
         }
     }
 }

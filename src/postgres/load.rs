@@ -12,7 +12,7 @@ use super::traits::{PostgreSQL, SqlTypes};
 #[async_trait]
 pub trait PgLoadExt {
     /// INSERT transaction.
-    async fn insert<'a, I, T>(&mut self, stmt: &'a str, collection: I) -> Result<()>
+    async fn insert_iter<'a, I, T>(&mut self, stmt: &'a str, collection: I) -> Result<()>
     where
         I: Iterator<Item = T> + Send + Sync,
         T: PostgreSQL + Send + Sync;
@@ -27,7 +27,7 @@ pub trait PgLoadExt {
 
 #[async_trait]
 impl PgLoadExt for tokio_postgres::Client {
-    async fn insert<'a, I, T>(&mut self, stmt: &'a str, collection: I) -> Result<()>
+    async fn insert_iter<'a, I, T>(&mut self, stmt: &'a str, collection: I) -> Result<()>
     where
         I: Iterator<Item = T> + Send + Sync,
         T: PostgreSQL + Send + Sync,
@@ -80,13 +80,13 @@ impl PgLoadExt for tokio_postgres::Client {
 
 #[async_trait]
 impl PgLoadExt for deadpool_postgres::Pool {
-    async fn insert<'a, I, T>(&mut self, stmt: &'a str, collection: I) -> Result<()>
+    async fn insert_iter<'a, I, T>(&mut self, stmt: &'a str, collection: I) -> Result<()>
     where
         I: Iterator<Item = T> + Send + Sync,
         T: PostgreSQL + Send + Sync,
     {
         let mut pg_client = self.get().await?;
-        pg_client.insert(stmt, collection).await?;
+        pg_client.insert_iter(stmt, collection).await?;
         Ok(())
     }
 

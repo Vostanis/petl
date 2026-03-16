@@ -1,4 +1,4 @@
-pub mod compress;
+pub mod config;
 pub mod extract;
 pub mod load;
 pub mod traits;
