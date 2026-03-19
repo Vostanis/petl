@@ -3,6 +3,8 @@ name = "petl-macros"
 edition = "2024"
 version = "0.1.0"
 publish = true
+description = "Framework of piped ETL (macros)"
+license = "MIT or Apache 2.0"
 
 [lib]
 proc-macro = true
