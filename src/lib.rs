@@ -12,7 +12,7 @@ pub use postgres::config::Config as PgPoolConfig;
 pub mod postgres;
 
 // Re-export for `PostgreSQL` macro.
-pub use macros::PostgreSQL;
+pub use petl_macros::PostgreSQL;
 pub use tokio_postgres::types::ToSql;
 
 pub mod http;
