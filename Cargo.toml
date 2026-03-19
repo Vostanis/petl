@@ -2,9 +2,11 @@
 name = "petl"
 version = "0.1.0"
 edition = "2024"
+description = "Framework of piped ETL"
+license = "MIT or Apache-2.0"
 
 [dependencies]
-petl-macros = { path = "./petl-macros" }
+petl-macros = { version = "0.1.0", path = "./petl-macros" }
 anyhow = "1.0.102"
 async-trait = "0.1.89"
 base64 = { version = "0.22.1" }
