@@ -1147,15 +1147,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "macros"
-version = "0.1.0"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
 name = "md-5"
 version = "0.10.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1363,8 +1354,8 @@ dependencies = [
  "csv",
  "deadpool-postgres",
  "futures",
- "macros",
  "num_cpus",
+ "petl-macros",
  "rayon",
  "reqwest",
  "serde",
@@ -1373,6 +1364,15 @@ dependencies = [
  "tokio-postgres",
  "tracing",
  "zip",
+]
+
+[[package]]
+name = "petl-macros"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
