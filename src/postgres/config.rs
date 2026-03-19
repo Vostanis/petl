@@ -45,7 +45,7 @@ impl Config {
     /// ```
     pub fn from_env(env_var_prefix: &str) -> Result<Self> {
         let login: Self = config::Config::builder()
-            .add_source(config::Environment::with_prefix(env_var_prefix))
+            .add_source(config::Environment::with_prefix(env_var_prefix).separator("_"))
             .build()?
             .try_deserialize()?;
         Ok(login)

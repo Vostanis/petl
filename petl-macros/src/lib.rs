@@ -62,7 +62,7 @@ pub fn derive_postgresql(item: TokenStream) -> TokenStream {
 
     // Return the implementation.
     quote! {
-        impl petl::manager::postgres::PostgreSQL for &#struct_name {
+        impl petl::postgres::traits::PostgreSQL for &#struct_name {
             fn sql_map(&self) -> std::vec::Vec<&(dyn petl::ToSql + std::marker::Sync)> {
                 vec![#(#field_refs),*]
             }

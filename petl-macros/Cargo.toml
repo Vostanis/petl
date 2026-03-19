@@ -1,8 +1,8 @@
 [package]
-name = "macros"
+name = "petl-macros"
 edition = "2024"
 version = "0.1.0"
-publish = false
+publish = true
 
 [lib]
 proc-macro = true
