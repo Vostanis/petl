@@ -2,11 +2,10 @@ use proc_macro::TokenStream;
 use quote::quote;
 use syn::{Data, DeriveInput, Fields, FieldsNamed, parse_macro_input};
 
-/// Provide a like-for-like implementation of ['io::manager::postgres::PostgreSQL`].
-/// Take the following:
+/// Implement a `sql_map()` based on core data types.
 ///
 /// ```rust
-/// #[derive(SqlMap)]
+/// #[derive(petl::PostgreSQL)]
 /// struct MyStruct {
 ///     field0: String,
 ///     field1: i64,
@@ -21,8 +20,8 @@ use syn::{Data, DeriveInput, Fields, FieldsNamed, parse_macro_input};
 ///     field1: i64,
 /// }
 ///
-/// impl datax_io::manager::postgres::PostgreSQL for &MyStruct {
-///     fn sql_map(&self) -> std::vec::Vec<&(dyn datax_io::ToSql + std::marker::Sync)> {
+/// impl petl::postgres::traits::PostgreSQL for &MyStruct {
+///     fn sql_map(&self) -> std::vec::Vec<&(dyn petl::ToSql + std::marker::Sync)> {
 ///         std::vec::Vec::from([
 ///             &self.field0,
 ///             &self.field1,
