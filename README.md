@@ -1,13 +1,13 @@
 # Pipelines for ETL
 Rust framework for speeding up ETL processes. Currently supports:
 - PostgreSQL (copying, inserting, selecting iterables)
-- HTTP (just a `reqwest` wrapper)
-- filestore helpers (reading json)
+- HTTP (just a `reqwest` wrapper with a `download_file()` addition)
+- filestore helpers (reading json, csv, tsv or `stringify_jpg()`)
 
 # Getting started
 The package revolves mostly around the `petl::Connections` struct:
 
-```{rs}
+```{rust}
 let conn = petl::Connections::new(
     // Returns
     // EXAMPLE_USERNAME,
@@ -30,7 +30,7 @@ let conn = petl::Connections::new(
 
 # Usage
 Once connections established, they can be accessed to speed up pipelines.
-```{rs}
+```{rust}
 use petl::prelude::*; // <-- contains the generic traits required across HTTP & PG processes.
 
 // Let's say we want to deserialize the following struct from a json endpoint,
