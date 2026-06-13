@@ -1,8 +1,8 @@
 /// Pull together several connection frameworks (like `postgres` and `http`).
+#[derive(Clone)]
 pub struct Connections {
     pub pg: deadpool_postgres::Pool,
     pub http: reqwest::Client,
-    // pub cache: rusqlite::Connection,
 }
 
 impl Connections {
@@ -11,6 +11,10 @@ impl Connections {
     /// e.g. a process containing the `postgres` & `http` features.
     pub fn new(pg: deadpool_postgres::Pool, http: reqwest::Client) -> Self {
         Self { pg: pg, http }
+    }
+
+    pub async fn pg(&self) -> anyhow::Result<deadpool_postgres::Client> {
+        Ok(self.pg.get().await?)
     }
 }
 
