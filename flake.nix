@@ -14,13 +14,14 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        toolchain = fenix.packages.${system}.complete.toolchain;
+        toolchain = fenix.packages.${system}.stable.toolchain;
       in
       {
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             toolchain # Rustc, Cargo, Clippy, Rustfmt, Rust-src
             rust-analyzer # LSP
+            cargo
             cargo-watch
             cargo-edit
             cargo-expand
